@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EnvironmentsModule } from './environments/environments.module';
-//import { VariablesModule } from './variables/variables.module';
+import { VariablesModule } from './variables/variables.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -34,7 +34,7 @@ import { AuthModule } from './auth/auth.module';
 
     AuthModule,
     EnvironmentsModule,
-    //VariablesModule,
+    VariablesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -4,9 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  //OneToMany,
+  OneToMany,
 } from 'typeorm';
-//import { Variable } from '../../variables/entities/variable.entity';
+import { Variable } from '../../variables/entities/variable.entity';
 
 @Entity('environments')
 export class Environment {
@@ -22,8 +22,8 @@ export class Environment {
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
 
-  //@OneToMany(() => Variable, (variable) => variable.environment, {
-  //  cascade: true,
-  //})
-  //variables: Variable[];
+  @OneToMany(() => Variable, (variable) => variable.environment, {
+   cascade: true,
+  })
+  variables: Variable[];
 }

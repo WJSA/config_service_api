@@ -17,7 +17,7 @@ import { EnvironmentsService } from './environments.service';
 import { CreateEnvironmentDto } from './dto/create-environment.dto';
 import { UpdateEnvironmentDto } from './dto/update-environment.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
-//import { VariablesService } from '../variables/variables.service';
+import { VariablesService } from '../variables/variables.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Environments')
@@ -27,7 +27,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class EnvironmentsController {
   constructor(
     private readonly environmentsService: EnvironmentsService,
-    //private readonly variablesService: VariablesService,
+    private readonly variablesService: VariablesService,
   ) {}
 
   /**
@@ -58,11 +58,11 @@ export class EnvironmentsController {
    * Consumo Masivo: Devuelve todas las variables del entorno como JSON plano
    * Este endpoint debe estar ANTES de :env_name para que coincida primero
    */
-  /*@Get(':env_name.json')
+  @Get(':env_name.json')
   @HttpCode(HttpStatus.OK)
   getEnvironmentJson(@Param('env_name') envName: string) {
     return this.variablesService.getAllAsJson(envName);
-  }*/
+  }
 
   /**
    * GET /environments/:env_name

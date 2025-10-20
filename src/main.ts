@@ -43,7 +43,7 @@ async function bootstrap() {
     )
     .addTag('Auth', 'Endpoints de autenticación')
     .addTag('Environments', 'Gestión de entornos')
-    //.addTag('Variables', 'Gestión de variables de configuración')
+    .addTag('Variables', 'Gestión de variables de configuración')
     .addTag('Health', 'Health check del servicio')
     .build();
 
