@@ -1,0 +1,55 @@
+services:
+  # Servicio de Base de Datos PostgreSQL
+  database:
+    image: postgres:16-alpine
+    container_name: config_service_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - config_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Servicio de API (Config Service)
+  config-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: config_service_api
+    restart: always
+    ports:
+      - "${PORT}:3000"
+    environment:
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      PORT: 3000
+      NODE_ENV: ${NODE_ENV}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - config_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  config_network:
+    driver: bridge
+
