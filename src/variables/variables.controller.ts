@@ -12,16 +12,22 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { VariablesService } from './variables.service';
 import { CreateVariableDto } from './dto/create-variable.dto';
 import { UpdateVariableDto } from './dto/update-variable.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Variable } from './entities/variable.entity';
 
 @ApiTags('Variables')
 @ApiBearerAuth('JWT-auth')
-@Controller('environments/:env_name/variables')
+@Controller({ path: 'environments/:env_name/variables', version: '1' })
 @UseGuards(JwtAuthGuard)
 export class VariablesController {
   constructor(private readonly variablesService: VariablesService) {}
@@ -32,6 +38,14 @@ export class VariablesController {
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Crear una nueva variable en un entorno' })
+  @ApiResponse({
+    status: 201,
+    description: 'Variable creada exitosamente',
+    type: Variable,
+  })
+  @ApiResponse({ status: 404, description: 'Entorno no encontrado' })
+  @ApiResponse({ status: 409, description: 'La variable ya existe' })
   create(
     @Param('env_name') envName: string,
     @Body() createVariableDto: CreateVariableDto,
@@ -45,6 +59,11 @@ export class VariablesController {
    */
   @Get()
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Listar todas las variables de un entorno con paginación',
+  })
+  @ApiResponse({ status: 200, description: 'Lista paginada de variables' })
+  @ApiResponse({ status: 404, description: 'Entorno no encontrado' })
   findAll(
     @Param('env_name') envName: string,
     @Query() paginationDto: PaginationDto,

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EnvironmentsModule } from './environments/environments.module';
@@ -14,6 +15,14 @@ import { AuthModule } from './auth/auth.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
+
+    // Configuración de Rate Limiting
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // 60 segundos
+        limit: 10, // 10 peticiones por ventana de tiempo
+      },
+    ]),
 
     // Configuración de TypeORM con PostgreSQL
     TypeOrmModule.forRootAsync({

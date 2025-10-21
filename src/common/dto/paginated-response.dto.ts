@@ -1,7 +1,30 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export class PaginatedResponseDto<T> {
+  @ApiProperty({
+    description: 'Total de elementos',
+    example: 50,
+  })
   count: number;
+
+  @ApiProperty({
+    description: 'URL de la siguiente página',
+    example: '/api/v1/environments?page=2&limit=10',
+    nullable: true,
+  })
   next: string | null;
+
+  @ApiProperty({
+    description: 'URL de la página anterior',
+    example: '/api/v1/environments?page=1&limit=10',
+    nullable: true,
+  })
   previous: string | null;
+
+  @ApiProperty({
+    description: 'Array de resultados',
+    isArray: true,
+  })
   results: T[];
 
   constructor(

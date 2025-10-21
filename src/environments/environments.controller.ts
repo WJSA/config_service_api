@@ -12,17 +12,23 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { EnvironmentsService } from './environments.service';
 import { CreateEnvironmentDto } from './dto/create-environment.dto';
 import { UpdateEnvironmentDto } from './dto/update-environment.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { VariablesService } from '../variables/variables.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Environment } from './entities/environment.entity';
 
 @ApiTags('Environments')
 @ApiBearerAuth('JWT-auth')
-@Controller('environments')
+@Controller({ path: 'environments', version: '1' })
 @UseGuards(JwtAuthGuard)
 export class EnvironmentsController {
   constructor(
@@ -36,6 +42,13 @@ export class EnvironmentsController {
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Crear un nuevo entorno' })
+  @ApiResponse({
+    status: 201,
+    description: 'Entorno creado exitosamente',
+    type: Environment,
+  })
+  @ApiResponse({ status: 409, description: 'El entorno ya existe' })
   create(@Body() createEnvironmentDto: CreateEnvironmentDto) {
     return this.environmentsService.create(createEnvironmentDto);
   }
@@ -46,6 +59,8 @@ export class EnvironmentsController {
    */
   @Get()
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Listar todos los entornos con paginación' })
+  @ApiResponse({ status: 200, description: 'Lista paginada de entornos' })
   findAll(@Query() paginationDto: PaginationDto) {
     return this.environmentsService.findAll(
       paginationDto.page,
@@ -60,6 +75,15 @@ export class EnvironmentsController {
    */
   @Get(':env_name.json')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Obtener todas las variables como JSON plano (consumo masivo)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Objeto con todas las variables del entorno',
+    schema: { example: { DB_URL: 'postgres://...', API_KEY: 'secret123' } },
+  })
+  @ApiResponse({ status: 404, description: 'Entorno no encontrado' })
   getEnvironmentJson(@Param('env_name') envName: string) {
     return this.variablesService.getAllAsJson(envName);
   }

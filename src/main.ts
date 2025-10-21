@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import compression from 'compression';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,6 +11,15 @@ async function bootstrap() {
   // Obtener el puerto desde las variables de entorno
   const configService = app.get(ConfigService);
   const port: number = configService.get('PORT') || 3000;
+
+  // Habilitar compresión de respuestas HTTP (gzip/deflate)
+  app.use(compression());
+
+  // Habilitar versionado de API nativo de NestJS
+  app.enableVersioning({
+    type: VersioningType.URI,
+    prefix: 'api/v',
+  });
 
   // Habilitar validación global con class-validator
   app.useGlobalPipes(
@@ -57,4 +67,5 @@ async function bootstrap() {
   console.log(`Swagger documentation: http://localhost:${port}/api/docs`);
   console.log(`OpenAPI JSON: http://localhost:${port}/api/docs-json`);
 }
-bootstrap();
+
+void bootstrap();

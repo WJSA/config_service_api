@@ -51,7 +51,13 @@ export class EnvironmentsService {
       order: { created_at: 'DESC' },
     });
 
-    return new PaginatedResponseDto(data, total, page, limit, '/environments');
+    return new PaginatedResponseDto(
+      data,
+      total,
+      page,
+      limit,
+      '/api/v1/environments',
+    );
   }
 
   /**

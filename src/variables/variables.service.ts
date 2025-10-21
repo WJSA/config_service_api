@@ -74,7 +74,7 @@ export class VariablesService {
       total,
       page,
       limit,
-      `/environments/${envName}/variables`,
+      `/api/v1/environments/${envName}/variables`,
     );
   }
 
@@ -155,9 +155,12 @@ export class VariablesService {
     // Verificar que el entorno exista
     await this.environmentsService.findOne(envName);
 
-    const variables = await this.variableRepository.find({
-      where: { environment_name: envName },
-    });
+    // Query optimizada: solo consulta name y value (no todos los campos)
+    const variables = await this.variableRepository
+      .createQueryBuilder('variable')
+      .select(['variable.name', 'variable.value'])
+      .where('variable.environment_name = :envName', { envName })
+      .getMany();
 
     // Convertir array de variables a objeto plano { KEY: "value" }
     return variables.reduce(
