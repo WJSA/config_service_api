@@ -49,8 +49,12 @@ services:
 volumes:
   postgres_data:
     driver: local
+    driver_opts:
+      type: "nfs"
+      o: "addr=nfssrv01,rw"
+      device: ":/data/docker-vols/group08/postgres_data"
 
 networks:
   config_network:
-    driver: bridge
+    driver: overlay
 
