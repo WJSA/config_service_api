@@ -62,10 +62,10 @@ async function bootstrap() {
   // Endpoint para visualizar la documentación
   SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}`);
-  console.log(`Swagger documentation: http://localhost:${port}/api/docs`);
-  console.log(`OpenAPI JSON: http://localhost:${port}/api/docs-json`);
+  await app.listen(port, '0.0.0.0');
+  console.log(`Application is running on: http://0.0.0.0:${port}`);
+  console.log(`Swagger documentation: http://0.0.0.0:${port}/api/docs`);
+  console.log(`OpenAPI JSON: http://0.0.0.0:${port}/api/docs-json`);
 }
 
 void bootstrap();
